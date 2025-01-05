@@ -24,6 +24,10 @@ $routes->post('/save-edit', 'ProductController::saveProduct');
 
 $routes->get('/delete/(:any)', 'ProductController::deleteProduct/$1');
 
+$routes->get('/search', 'ProductController::searchProduct');
+
+$routes->get('/filter', 'ProductController::filterProduct');
+
 // category
 $routes->group('/category', function($routes) {
     $routes->get('/', 'CategoryController::index');

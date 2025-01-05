@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        .pagination li {
+    margin-right: 10px; /* Thêm khoảng cách giữa các số phân trang */
+}
+
+.pagination .page-link {
+    padding: 8px 15px; /* Điều chỉnh padding của liên kết phân trang */
+}
+    </style>
 
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
@@ -22,10 +31,29 @@
 <body>
     <div class="m-4">
         <a href="/home"><i class="fa-solid fa-left-long"></i></a>
-        <h3 class="text-center">QUẢN LÝ SẢN PHẨM</h3>
+        <h3 class="text-center mb-3">QUẢN LÝ SẢN PHẨM</h3>
     </div>
     <div>
-        <a href="/create" class="btn btn-primary mx-5 my-2"><i class="fa-solid fa-plus"></i> Thêm mới</a>
+        <div class="row row-col-3">
+            <div class="col">
+                <a href="/create" class="btn btn-primary mx-5 my-2"><i class="fa-solid fa-plus"></i> Thêm mới</a>
+            </div>
+            <div class="col">
+                <form action="/search" method="get">
+                    <input type="text" name="search" id="" placeholder="Search name ..." form-control>
+                    <button type="submit" class="btn btn-info"><i class="fa-solid fa-magnifying-glass"></i></button>
+                </form>
+            </div>
+            <div class="col">
+                <form action="/filter" method="get" style="width: 50%;">
+                    <select name="filter" id="" class="form-select" onchange="this.form.submit()">
+                        <option value="0" <?= ($select == 0) ? 'selected' : ''; ?>>--Lọc theo giá--</option>
+                        <option value="1" <?= ($select == 1) ? 'selected' : ''; ?>>Lọc theo giá tăng dần</option>
+                        <option value="2" <?= ($select == 2) ? 'selected' : ''; ?>>Lọc theo giá giảm dần</option>
+                    </select>
+                </form>
+            </div>
+        </div>
         <table class="table table-hover table-bordered mx-auto" style="width: 95%;">
             <tr class="text-center table-dark">
                 <th>ID</th>
@@ -57,6 +85,14 @@
                 }
             ?>
         </table>
+        <div class="mx-auto">
+  <ul class="pagination justify-content-center">
+    <?= $pager->links(); ?>
+  </ul>
+</div>
+        
+        
+        
         <a href="/delete-all" class="mx-5 mb-3 btn btn-warning" onclick=" return confirm('Bạn muốn xóa tất cả?');"><i class="fa-solid fa-trash"></i> Xóa tất cả danh sách</a>
     </div>
 </body>

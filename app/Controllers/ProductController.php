@@ -16,10 +16,18 @@ class ProductController extends Controller
 
    public function listProducts()
    {
+      ;
+
       $pro_model = new ProductModel();
       $cate_model = new CategoryModel();
-      $data['products'] = $pro_model->getAllProduct();
+      // $data['products'] = $pro_model->getAllProduct();
+      $perPage = 4;
+      $data['products'] = $pro_model->paginate($perPage);
       $data['categories'] = $cate_model->getAllCategory();
+      $data['select'] = 0;
+
+      
+      $data['pager'] = $pro_model->pager;
       return view('product/index', $data);
    }
 
@@ -33,6 +41,8 @@ class ProductController extends Controller
    public function addNewProduct()
    {
       $pro_model = new ProductModel();
+      $cate_model = new CategoryModel();
+      $categories = $cate_model->getAllCategory();
 
       $rules = [
          'name' => [
@@ -61,7 +71,8 @@ class ProductController extends Controller
       if (!$this->validate($rules)) {
          return view('product/create', [
             'validation' => $this->validator,
-            'oldInput' => $this->request->getPost()
+            'oldInput' => $this->request->getPost(),
+            'categories' => $categories
          ],);
       }
 
@@ -175,5 +186,54 @@ class ProductController extends Controller
       $pro_model = new ProductModel();
       $pro_model->deleteAllProduct();
       return redirect()->to('/product');
+   }
+
+   public function searchProduct() {
+      $pro_model = new ProductModel();
+      $key = $this->request->getGet('search');
+
+      // $data['products'] = $pro_model->like('pro_name', $key)->findAll();
+      $perPage = 4;
+      $data['products'] = $pro_model->like('pro_name', $key)->paginate($perPage);
+      $data['pager'] = $pro_model->pager;
+
+      $data['select'] = 0;
+
+      return view('/product/index', $data);
+   }
+
+   public function filterProduct() {
+      $pro_model = new ProductModel();
+      $key = $this->request->getGet('filter');
+
+      if($key == 0) {
+         // $data['products'] = $pro_model->findAll();
+         $perPage = 4;
+         $data['products'] = $pro_model->paginate($perPage);
+         $data['pager'] = $pro_model->pager;
+         $data['select'] = 0;
+      }
+      
+      if($key == 1) {
+         // $data['products'] = $pro_model->orderBy('price', 'ASC')->findAll();
+
+         $perPage = 4;
+         $data['products'] = $pro_model->orderBy('price', 'ASC')->paginate($perPage);
+         $data['pager'] = $pro_model->pager;
+
+         $data['select'] = 1;
+      }
+
+      if($key == 2) {
+         // $data['products'] = $pro_model->orderBy('price', 'DESC')->findAll();
+         
+         $perPage = 4;
+         $data['products'] = $pro_model->orderBy('price', 'DESC')->paginate($perPage);
+         $data['pager'] = $pro_model->pager;
+
+         $data['select'] = 2;
+      }
+
+      return view('/product/index', $data);
    }
 }
